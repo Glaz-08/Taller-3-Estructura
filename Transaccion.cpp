@@ -14,6 +14,25 @@ Transaccion::~Transaccion(){}//destructor
 double Transaccion::getMonto(){
     return this->monto;
 }
+string Transaccion::getCuentaOrigen(){
+    return this->CuentaOrigen;
+}
+string Transaccion::getCuentaDestino(){
+    return this->CuentaOrigen;
+}
+int Transaccion::getId(){
+    return this->id;
+}
+string Transaccion::getUbicacion(){
+    return this->Ubicacion;
+}
+string Transaccion::getFecha(){
+    return this->fecha;
+}
+string Transaccion::getHora(){
+    return this->hora;
+}
+
 
 
 

@@ -8,33 +8,59 @@
 #include "Nodo.h"
 #include "Transaccion.h"
 #include "ArbolABB.h"
-
-
 // Función para mostrar el menú y manejar la interacción con el usuario
 void menu(ArbolABB& arbol) {
     int opcion;
     do {
         std::cout << "\n--- Menú Principal ---\n";
-        std::cout << "1. Leer transacciones desde archivo\n";
+        std::cout << "1. reporte\n";
         std::cout << "2. Insertar nueva transacción\n";
         std::cout << "3. Mostrar transacciones sospechosas\n";
         std::cout << "4. Generar reporte de actividad\n";
         std::cout << "5. Salir\n";
         std::cout << "Ingrese la opción deseada: ";
         std::cin >> opcion;
-
+        int id;
+        std::string cuentaOrigen, cuentaDestino, ubicacion, fecha, hora;
+        double monto;
         switch (opcion) {
             case 1:
-                leerTransacciones(arbol);
+                arbol.generarReporte();
                 break;
-            case 2:
-                //insertar una nueva transacción
+            case 2: {
+                std::cout << "Ingrese ID: ";
+                std::cin >> id;
+                std::cout << "Ingrese Cuenta Origen: ";
+                std::cin >> cuentaOrigen;
+                std::cout << "Ingrese Cuenta Destino: ";
+                std::cin >> cuentaDestino;
+                std::cout << "Ingrese Monto: ";
+                std::cin >> monto;
+                std::cout << "Ingrese Ubicación: ";
+                std::cin >> ubicacion;
+                std::cout << "Ingrese Fecha: ";
+                std::cin >> fecha;
+                std::cout << "Ingrese Hora: ";
+                std::cin >> hora;
+                Transaccion* transaccion = new Transaccion(id, cuentaOrigen, cuentaDestino, monto, ubicacion, fecha, hora);
+                arbol.insertar(transaccion);
+                std::cout << "Transacción nueva realizada!!\n";
                 break;
-            case 3:
-                //mostrar transacciones sospechosas
+            }
+            case 3: {
+                double montoLimite;
+                std::string ubicacion1, ubicacion2;
+                std::cout << "Ingrese monto límite para detectar transacciones sospechosas: ";
+                std::cin >> montoLimite;
+                std::cout << "Ingrese primera ubicación para detección: ";
+                std::cin >> ubicacion1;
+                std::cout << "Ingrese segunda ubicación para detección: ";
+                std::cin >> ubicacion2;
+                arbol.detectarTransaccionesSospechosas(montoLimite, ubicacion1, ubicacion2);
                 break;
+            }
             case 4:
-                //reporte de actividad
+                arbol.generarReporte();
                 break;
             case 5:
                 std::cout << "Saliendo del programa...\n";

@@ -11,5 +11,11 @@ class Transaccion{
     Transaccion(int id,string CuentaOrigen,string CuentaDestino,double monto,string Ubicacion,string fecha, string hora);
     ~Transaccion();
     double getMonto();
+    string getCuentaOrigen();
+    string getCuentaDestino();
+    int getId();
+    string getUbicacion();
+    string getFecha();
+    string getHora();
         
 };
