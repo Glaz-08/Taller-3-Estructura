@@ -31,13 +31,13 @@ void ArbolABB::insertar(Nodo*& nodo, Transaccion* transaccion) {
     }
 }
 
-void ArbolABB::detectarTransaccionesSospechosas(Nodo* nodo, double montoLimite, const std::string& ubicacion1, const std::string& ubicacion2, std::unordered_map<std::string, int>& cuentaTransacciones) {
+void ArbolABB::detectarTransaccionesSospechosas(Nodo* nodo, Criterio* criterio, std::unordered_map<std::string, int>& cuentaTransacciones) {
     if (!nodo) return;
 
-    if (nodo->transaccion->getMonto() > montoLimite) {
+    if (nodo->transaccion->getMonto() > criterio->getMonto()) {
         std::cout << "Transacción sospechosa detectada: ID " << nodo->transaccion->getId() << " supera el monto límite.\n";
     }
-
+    
     cuentaTransacciones[nodo->transaccion->getUbicacion()]++;
 
     detectarTransaccionesSospechosas(nodo->izquierdo, montoLimite, ubicacion1, ubicacion2, cuentaTransacciones);
@@ -51,7 +51,7 @@ void ArbolABB::detectarTransaccionesSospechosas(double montoLimite, const std::s
     if (cuentaTransacciones[ubicacion1] > 1 && cuentaTransacciones[ubicacion2] > 1) {
         std::cout << "Transacciones sospechosas detectadas entre ubicaciones " << ubicacion1 << " y " << ubicacion2 << ".\n";
     }
-}
+}    
 
 void ArbolABB::generarReporte(Nodo* nodo) {
     if (!nodo) return;
@@ -63,6 +63,16 @@ void ArbolABB::generarReporte(Nodo* nodo) {
     std::cout << "Ubicación: " << nodo->transaccion->getUbicacion() << "\n";
     std::cout << "Fecha: " << nodo->transaccion->getFecha() << "\n";
     std::cout << "Hora: " << nodo->transaccion->getHora() << "\n";
+
+    // Condiciones para alertas de fraude
+    if (nodo->transaccion->getMonto() > 10000) {
+        std::cout << "ALERTA DE FRAUDE: Monto mayor a 10,000!\n";
+    }
+
+    if (nodo->transaccion->getUbicacion() == "ubicacion1" || nodo->transaccion->getUbicacion() == "ubicacion2") {
+        std::cout << "ALERTA DE FRAUDE: Transacción en ubicación sospechosa!\n";
+    }
+
     std::cout << "-------------------------\n";
 
     generarReporte(nodo->izquierdo);
@@ -72,4 +82,3 @@ void ArbolABB::generarReporte(Nodo* nodo) {
 void ArbolABB::generarReporte() {
     generarReporte(raiz);
 }
-    

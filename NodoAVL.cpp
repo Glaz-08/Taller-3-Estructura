@@ -1,12 +1,12 @@
 #include "Transaccion.h"
 #include "NodoAVL.h"
 
-class NodoAVL {
-public:
-    Transaccion* transaccion;
-    NodoAVL* izquierdo;
-    NodoAVL* derecho;
-    int altura;
+NodoAVL::NodoAVL(Transaccion* transaccion) {
+    this->transaccion = transaccion;
+    this->izquierdo = izquierdo;
+    this->derecho = derecho;
+    this->altura = altura;
+}
 
-    NodoAVL(Transaccion* transaccion) : transaccion(transaccion), izquierdo(nullptr), derecho(nullptr), altura(1) {}
-};
+NodoAVL::~NodoAVL() {} // Destructor
+
