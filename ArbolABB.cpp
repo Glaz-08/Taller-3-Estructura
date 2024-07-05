@@ -2,11 +2,14 @@
 #include "Nodo.h"
 #include "Transaccion.h"
 #include "ArbolABB.h"
+#include "Criterio.h"
 
 ArbolABB::ArbolABB() {
     this->raiz = nullptr;
 }
-
+Nodo* ArbolABB::getRaiz() const {
+    return raiz;
+}
 void ArbolABB::insertar(Transaccion* transaccion) {
     if (raiz == nullptr) {
         raiz = new Nodo(transaccion);
@@ -31,54 +34,85 @@ void ArbolABB::insertar(Nodo*& nodo, Transaccion* transaccion) {
     }
 }
 
-void ArbolABB::detectarTransaccionesSospechosas(Nodo* nodo, Criterio* criterio, std::unordered_map<std::string, int>& cuentaTransacciones) {
+void ArbolABB::detectarTransaccionesSospechosas(Nodo* nodo,Criterio* criterio) {
     if (!nodo) return;
 
     if (nodo->transaccion->getMonto() > criterio->getMonto()) {
-        std::cout << "Transacción sospechosa detectada: ID " << nodo->transaccion->getId() << " supera el monto límite.\n";
+        cout << "Transacción sospechosa detectada: ID " << nodo->transaccion->getId() << " supera el monto límite.\n";
     }
-    
-    cuentaTransacciones[nodo->transaccion->getUbicacion()]++;
+    //tomaremos un criterio de 5 minutos para una transaccion corta
+    if(nodo->izquierdo){
+        string tiempo = nodo->transaccion->getHora();
+        string tiempo2 = nodo->izquierdo->transaccion->getHora();
+        int minutos = stoi(tiempo.substr(3));
+        int minutos2 = stoi(tiempo2.substr(3));
 
-    detectarTransaccionesSospechosas(nodo->izquierdo, montoLimite, ubicacion1, ubicacion2, cuentaTransacciones);
-    detectarTransaccionesSospechosas(nodo->derecho, montoLimite, ubicacion1, ubicacion2, cuentaTransacciones);
+        if(nodo->transaccion->getUbicacion()!=criterio->getUbicacion()&&abs(minutos-minutos2)<5){
+            cout << "Transacción sospechosa detectada: ID " << nodo->transaccion->getId() << " supera el tiempo minimo de espera en tu ubicacion.\n";
+            nodo->fraude=true;// si es true es por que si es fraudulento
+        }
+        if(abs(minutos-minutos2)<5){
+            cout << "Transacción sospechosa detectada: ID " << nodo->transaccion->getId() << " supera el tiempo minimo de espera.\n";
+            nodo->fraude=true;
+        }
+    }
+    if(nodo->derecho){
+        string tiempo = nodo->transaccion->getHora();
+        string tiempo2 = nodo->derecho->transaccion->getHora();
+        int minutos = stoi(tiempo.substr(3));
+        int minutos2 = stoi(tiempo2.substr(3));
+
+        if(nodo->transaccion->getUbicacion()!=criterio->getUbicacion()&&abs(minutos-minutos2)<5){
+            cout << "Transacción sospechosa detectada: ID " << nodo->transaccion->getId() << " supera el tiempo minimo de espera en tu ubicacion.\n";
+            nodo->fraude=true;
+        }
+        if(abs(minutos-minutos2)<5){
+            cout << "Transacción sospechosa detectada: ID " << nodo->transaccion->getId() << " supera el tiempo minimo de espera.\n";
+            nodo->fraude=true;
+        }
+    }
+
+    detectarTransaccionesSospechosas(nodo->izquierdo,criterio);
+    detectarTransaccionesSospechosas(nodo->derecho, criterio);
+}   
+void ArbolABB::detectarTransaccionesSospechosas(Criterio* criterio) {
+    detectarTransaccionesSospechosas(raiz, criterio);
 }
-
-void ArbolABB::detectarTransaccionesSospechosas(double montoLimite, const std::string& ubicacion1, const std::string& ubicacion2) {
-    std::unordered_map<std::string, int> cuentaTransacciones;
-    detectarTransaccionesSospechosas(raiz, montoLimite, ubicacion1, ubicacion2, cuentaTransacciones);
-
-    if (cuentaTransacciones[ubicacion1] > 1 && cuentaTransacciones[ubicacion2] > 1) {
-        std::cout << "Transacciones sospechosas detectadas entre ubicaciones " << ubicacion1 << " y " << ubicacion2 << ".\n";
-    }
-}    
 
 void ArbolABB::generarReporte(Nodo* nodo) {
     if (!nodo) return;
-
-    std::cout << "Transacción ID: " << nodo->transaccion->getId() << "\n";
-    std::cout << "Cuenta Origen: " << nodo->transaccion->getCuentaOrigen() << "\n";
-    std::cout << "Cuenta Destino: " << nodo->transaccion->getCuentaDestino() << "\n";
-    std::cout << "Monto: " << nodo->transaccion->getMonto() << "\n";
-    std::cout << "Ubicación: " << nodo->transaccion->getUbicacion() << "\n";
-    std::cout << "Fecha: " << nodo->transaccion->getFecha() << "\n";
-    std::cout << "Hora: " << nodo->transaccion->getHora() << "\n";
-
-    // Condiciones para alertas de fraude
-    if (nodo->transaccion->getMonto() > 10000) {
-        std::cout << "ALERTA DE FRAUDE: Monto mayor a 10,000!\n";
+    if(!nodo->fraude){
+        cout << "Transaccioens NO FRAUDULENTAS" << "\n";
+        cout << "Transacción ID: " << nodo->transaccion->getId() << "\n";
+        cout << "Cuenta Origen: " << nodo->transaccion->getCuentaOrigen() << "\n";
+        cout << "Cuenta Destino: " << nodo->transaccion->getCuentaDestino() << "\n";
+        cout << "Monto: " << nodo->transaccion->getMonto() << "\n";
+        cout << "Ubicación: " << nodo->transaccion->getUbicacion() << "\n";
+        cout << "Fecha: " << nodo->transaccion->getFecha() << "\n";
+        cout << "Hora: " << nodo->transaccion->getHora() << "\n";
+        cout << "-------------------------\n";
     }
-
-    if (nodo->transaccion->getUbicacion() == "ubicacion1" || nodo->transaccion->getUbicacion() == "ubicacion2") {
-        std::cout << "ALERTA DE FRAUDE: Transacción en ubicación sospechosa!\n";
-    }
-
-    std::cout << "-------------------------\n";
-
     generarReporte(nodo->izquierdo);
     generarReporte(nodo->derecho);
 }
 
 void ArbolABB::generarReporte() {
     generarReporte(raiz);
+    generarReportesFraudulentos(raiz);
+}
+void ArbolABB::generarReportesFraudulentos(Nodo* nodo) {
+    if (!nodo) return;
+    if(nodo->fraude){
+        cout << "Transaccioens FRAUDULENTAS" << "\n";
+        cout << "Transacción ID: " << nodo->transaccion->getId() << "\n";
+        cout << "Cuenta Origen: " << nodo->transaccion->getCuentaOrigen() << "\n";
+        cout << "Cuenta Destino: " << nodo->transaccion->getCuentaDestino() << "\n";
+        cout << "Monto: " << nodo->transaccion->getMonto() << "\n";
+        cout << "Ubicación: " << nodo->transaccion->getUbicacion() << "\n";
+        cout << "Fecha: " << nodo->transaccion->getFecha() << "\n";
+        cout << "Hora: " << nodo->transaccion->getHora() << "\n";
+        cout << "-------------------------\n";
+    }
+    generarReportesFraudulentos(nodo->izquierdo);
+    generarReportesFraudulentos(nodo->derecho);
 }

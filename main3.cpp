@@ -9,6 +9,7 @@
 #include "Transaccion.h"
 #include "ArbolABB.h"
 #include "ArbolAVL.h"
+#include "Criterio.h"
 
 void menu(ArbolABB& arbolABB, ArbolAVL& arbolAVL, Criterio* criterio) {
     int opcion;
@@ -47,15 +48,7 @@ void menu(ArbolABB& arbolABB, ArbolAVL& arbolAVL, Criterio* criterio) {
                 break;
             }
             case 2: {
-                double montoLimite;
-                std::string ubicacion1, ubicacion2;
-                std::cout << "Ingrese monto límite para detectar transacciones sospechosas: ";
-                std::cin >> montoLimite;
-                std::cout << "Ingrese primera ubicación para detección: ";
-                std::cin >> ubicacion1;
-                std::cout << "Ingrese segunda ubicación para detección: ";
-                std::cin >> ubicacion2;
-                arbolABB.detectarTransaccionesSospechosas(montoLimite, ubicacion1, ubicacion2);
+                arbolABB.detectarTransaccionesSospechosas(criterio);
                 break;
             }
             case 3:
@@ -120,6 +113,7 @@ Criterio* leerCriterio() {
     std::string linea;
     std::ifstream archivo("Transacciones.txt");
     char delimitador = ',';
+    Criterio* criterio = nullptr; // Definición fuera del bloque while
     while (std::getline(archivo, linea)) {
         std::vector<std::string> partes = split(linea, delimitador);
         if (partes.size() == 4) {
@@ -128,7 +122,7 @@ Criterio* leerCriterio() {
             int horaInicioCriterio = std::stoi(partes[2]);
             int horaFinalCriterio = std::stoi(partes[3]);
 
-            Criterio* criterio = new Criterio(monto,criterioUbicacion,horaInicioCriterio,horaFinalCriterio);
+            criterio = new Criterio(monto, criterioUbicacion, horaInicioCriterio, horaFinalCriterio);
         } else {
             std::cout << "Error: Datos incompletos en la línea del archivo de criterios." << std::endl;
         }
@@ -140,7 +134,6 @@ Criterio* leerCriterio() {
 int main() {
     ArbolABB arbolABB;
     ArbolAVL arbolAVL;
-    ArbolDecision arbolDecision;
     leerTransacciones(arbolABB, arbolAVL);
     Criterio* criterio = leerCriterio();
     menu(arbolABB, arbolAVL, criterio);

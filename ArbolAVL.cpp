@@ -82,3 +82,18 @@ NodoAVL* ArbolAVL::rotacionIzquierda(NodoAVL* x) {
 
     return y;
 }
+Transaccion* ArbolAVL::buscar(int id) {
+    return buscar(raiz, id);
+}
+
+Transaccion* ArbolAVL::buscar(NodoAVL* nodo, int id) {
+    if (nodo == nullptr)
+        return nullptr;
+
+    if (id == nodo->transaccion->id)
+        return nodo->transaccion;
+    else if (id < nodo->transaccion->id)
+        return buscar(nodo->izquierdo, id);
+    else
+        return buscar(nodo->derecho, id);
+}

@@ -17,5 +17,6 @@ class Transaccion{
     string getUbicacion();
     string getFecha();
     string getHora();
+    std::string toString() const;
         
 };

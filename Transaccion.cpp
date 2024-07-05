@@ -1,5 +1,5 @@
 #include "Transaccion.h"
-
+#include <sstream>
 Transaccion::Transaccion(int id,string CuentaOrigen,string CuentaDestino,double monto,string Ubicacion,string fecha, string hora){
     this-> id = id;
     this-> CuentaOrigen = CuentaOrigen;
@@ -32,7 +32,17 @@ string Transaccion::getFecha(){
 string Transaccion::getHora(){
     return this->hora;
 }
-
+std::string Transaccion::toString() const {
+    std::ostringstream oss;
+    oss << "Transacción ID: " << id << "\n"
+        << "Cuenta Origen: " << CuentaOrigen << "\n"
+        << "Cuenta Destino: " << CuentaDestino << "\n"
+        << "Monto: " << monto << "\n"
+        << "Ubicación: " << Ubicacion << "\n"
+        << "Fecha: " << fecha << "\n"
+        << "Hora: " << hora << "\n";
+    return oss.str();
+}
 
 
 

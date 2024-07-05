@@ -3,26 +3,29 @@
 #include <unordered_map>
 #include "Nodo.h"
 #include "Transaccion.h"
+#include "Criterio.h"
 
 class ArbolABB {
 public:
     Nodo* raiz;
 
     ArbolABB();
-
     void insertar(Transaccion* transaccion);
-    void detectarTransaccionesSospechosas(double montoLimite, const std::string& ubicacion1, const std::string& ubicacion2);
     void generarReporte();
+    void generarReportesFraudulentos();
+    Nodo* getRaiz() const;
+    void detectarTransaccionesSospechosas(Criterio* criterio);
 
 private:
-    void insertar(Nodo& nodo, Transaccion transaccion);
-    void detectarTransaccionesSospechosas(Nodo* nodo, double montoLimite, const std::string& ubicacion1, const std::string& ubicacion2, std::unordered_map<std::string, int>& cuentaTransacciones);
+    void insertar(Nodo*& nodo, Transaccion* transaccion); // Cambiado el paso de argumentos por referencia
+    void detectarTransaccionesSospechosas(Nodo* nodo,Criterio* criterio);
     void generarReporte(Nodo* nodo);
+    void generarReportesFraudulentos(Nodo* nodo);
 
     // Funciones de balanceo AVL
     int altura(Nodo* N);
     int obtenerBalance(Nodo* N);
     Nodo* rotacionDerecha(Nodo* y);
     Nodo* rotacionIzquierda(Nodo* x);
-    Nodo* insertarAVL(Nodo* nodo, Transaccion* transaccion);
 };
+
