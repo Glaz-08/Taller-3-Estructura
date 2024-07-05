@@ -18,7 +18,7 @@ string Transaccion::getCuentaOrigen(){
     return this->CuentaOrigen;
 }
 string Transaccion::getCuentaDestino(){
-    return this->CuentaOrigen;
+    return this->CuentaDestino;
 }
 int Transaccion::getId(){
     return this->id;

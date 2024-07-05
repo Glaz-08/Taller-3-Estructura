@@ -10,5 +10,5 @@ class Nodo
         Nodo* izquierdo;
         Nodo* derecho;
         bool fraude;
-        Nodo(Transaccion* transaccion) : transaccion(transaccion), izquierdo(nullptr), derecho(nullptr) {}
+        Nodo(Transaccion* transaccion);
 };

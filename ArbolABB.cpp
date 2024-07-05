@@ -48,12 +48,12 @@ void ArbolABB::detectarTransaccionesSospechosas(Nodo* nodo,Criterio* criterio) {
         int minutos2 = stoi(tiempo2.substr(3));
 
         if(nodo->transaccion->getUbicacion()!=criterio->getUbicacion()&&abs(minutos-minutos2)<5){
-            cout << "Transacción sospechosa detectada: ID " << nodo->transaccion->getId() << " supera el tiempo minimo de espera en tu ubicacion.\n";
-            nodo->fraude=true;// si es true es por que si es fraudulento
+            cout << "Transacción sospechosa detectada: ID " << nodo->izquierdo->transaccion->getId() << " transacción realizada en ubicación geográfica distinta en un corto periodo de tiempo.\n";
+            nodo->izquierdo->fraude=true;// si es true es por que si es fraudulento
         }
         if(abs(minutos-minutos2)<5){
-            cout << "Transacción sospechosa detectada: ID " << nodo->transaccion->getId() << " supera el tiempo minimo de espera.\n";
-            nodo->fraude=true;
+            cout << "Transacción sospechosa detectada: ID " << nodo->izquierdo->transaccion->getId() << " supera el tiempo minimo de espera.\n";
+            nodo->izquierdo->fraude=true;
         }
     }
     if(nodo->derecho){
@@ -63,12 +63,12 @@ void ArbolABB::detectarTransaccionesSospechosas(Nodo* nodo,Criterio* criterio) {
         int minutos2 = stoi(tiempo2.substr(3));
 
         if(nodo->transaccion->getUbicacion()!=criterio->getUbicacion()&&abs(minutos-minutos2)<5){
-            cout << "Transacción sospechosa detectada: ID " << nodo->transaccion->getId() << " supera el tiempo minimo de espera en tu ubicacion.\n";
-            nodo->fraude=true;
+            cout << "Transacción sospechosa detectada: ID " << nodo->derecho->transaccion->getId() << " transacción realizada en ubicación geográfica distinta en un corto periodo de tiempo.\n";
+            nodo->derecho->fraude=true;
         }
         if(abs(minutos-minutos2)<5){
-            cout << "Transacción sospechosa detectada: ID " << nodo->transaccion->getId() << " supera el tiempo minimo de espera.\n";
-            nodo->fraude=true;
+            cout << "Transacción sospechosa detectada: ID " << nodo->derecho->transaccion->getId() << " supera el tiempo minimo de espera.\n";
+            nodo->derecho->fraude=true;
         }
     }
 
@@ -82,7 +82,6 @@ void ArbolABB::detectarTransaccionesSospechosas(Criterio* criterio) {
 void ArbolABB::generarReporte(Nodo* nodo) {
     if (!nodo) return;
     if(!nodo->fraude){
-        cout << "Transaccioens NO FRAUDULENTAS" << "\n";
         cout << "Transacción ID: " << nodo->transaccion->getId() << "\n";
         cout << "Cuenta Origen: " << nodo->transaccion->getCuentaOrigen() << "\n";
         cout << "Cuenta Destino: " << nodo->transaccion->getCuentaDestino() << "\n";
@@ -97,13 +96,15 @@ void ArbolABB::generarReporte(Nodo* nodo) {
 }
 
 void ArbolABB::generarReporte() {
+    cout << "-------------------------\n";
+    cout << "Transacciones NO FRAUDULENTAS" << "\n";
     generarReporte(raiz);
+    cout << "Transacciones FRAUDULENTAS" << "\n";
     generarReportesFraudulentos(raiz);
 }
 void ArbolABB::generarReportesFraudulentos(Nodo* nodo) {
     if (!nodo) return;
     if(nodo->fraude){
-        cout << "Transaccioens FRAUDULENTAS" << "\n";
         cout << "Transacción ID: " << nodo->transaccion->getId() << "\n";
         cout << "Cuenta Origen: " << nodo->transaccion->getCuentaOrigen() << "\n";
         cout << "Cuenta Destino: " << nodo->transaccion->getCuentaDestino() << "\n";

@@ -16,7 +16,7 @@ void menu(ArbolABB& arbolABB, ArbolAVL& arbolAVL, Criterio* criterio) {
     do {
         std::cout << "\n--- Menú Principal ---\n";
         std::cout << "1. Insertar nueva transacción\n";
-        std::cout << "2. Mostrar transacciones sospechosas\n";
+        std::cout << "2. Detectar y Mostrar transacciones sospechosas\n";
         std::cout << "3. Generar reporte de actividad\n";
         std::cout << "4. Buscar transacción histórica\n";
         std::cout << "5. Salir\n";
@@ -57,6 +57,7 @@ void menu(ArbolABB& arbolABB, ArbolAVL& arbolAVL, Criterio* criterio) {
             case 4: {
                 std::cout << "Ingrese ID de la transacción a buscar: ";
                 std::cin >> id;
+                cout << "-------------------------\n";
                 Transaccion* transaccion = arbolAVL.buscar(id);
                 if (transaccion) {
                     std::cout << "Transacción encontrada: " << transaccion->toString() << std::endl;
@@ -111,7 +112,7 @@ void leerTransacciones(ArbolABB& arbolABB, ArbolAVL& arbolAVL) {
 
 Criterio* leerCriterio() {
     std::string linea;
-    std::ifstream archivo("Transacciones.txt");
+    std::ifstream archivo("criterios.txt");
     char delimitador = ',';
     Criterio* criterio = nullptr; // Definición fuera del bloque while
     while (std::getline(archivo, linea)) {

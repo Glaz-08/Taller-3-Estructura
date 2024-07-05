@@ -16,9 +16,3 @@ int Criterio::getMonto(){
 string Criterio::getUbicacion(){
     return this->ubicacion;
 }
-int Transaccion::getHoraInicio(){
-    return this->horaInicio;
-}
-int Transaccion::getHoraFin(){
-    return this->horaFin;
-}
